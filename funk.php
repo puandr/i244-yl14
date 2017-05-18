@@ -94,6 +94,8 @@ function lisa(){
 	
 	if (empty($_SESSION['user'])) {
 		header("Location: ?page=login");
+	} elseif ($_SESSION['roll'] == 'user') {
+		header("Location: ?page=loomad");
 	} else {
 		//echo "<p>";
 		//print_r($_SERVER['REQUEST_METHOD']);
