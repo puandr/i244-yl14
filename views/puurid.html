@@ -1,0 +1,13 @@
+<?php if (!empty($puurid)):?>
+
+	<?php foreach($puurid as $id => $puur): ?>
+		<!-- stiil on CSS-s ette antud, ei hakka seda muutma -->
+		<div class="puur">
+			<h5>Puur <?php echo $id; ?></h5>
+			<?php foreach($puur as $looma_id => $loom): ?>
+				<img src="pildid/<?php echo $loom['liik']; ?>.png">
+			<?php endforeach; ?>
+		</div>
+	<?php endforeach; ?>
+	
+<?php endif;?>
