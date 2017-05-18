@@ -23,19 +23,12 @@ function logi(){
 			if ($_POST['user'] != "" && $_POST['pass'] != "") {
 				$kasutaja = mysqli_real_escape_string($connection, $_POST['user']);
 				$parool = mysqli_real_escape_string($connection, $_POST['pass']);
-				$query = "SELECT id FROM 10162828_kylastajad WHERE username = '$kasutaja' AND passw = SHA1('$parool')";
-				$query_roll = "SELECT roll FROM 10162828_kylastajad WHERE username = '$kasutaja' AND passw = SHA1('$parool')";
-				$result = mysqli_query($connection, $query);
-				$resul_roll = mysqli_query($connection, $query);
-				
-				echo "<p><pre>";
-				print_r($resul_roll);
-				echo "</pre>";
-				
+				$query = "SELECT id, roll FROM 10162828_kylastajad WHERE username = '$kasutaja' AND passw = SHA1('$parool')";
+				$result = mysqli_query($connection, $query);					
 				if (mysqli_num_rows($result)) {
 					$_SESSION['user'] = $_POST['user'];
-					
-					//$_SESSION['roll'] = $_POST['roll'];
+					$rida = mysqli_fetch_assoc($result);
+					$_SESSION['roll'] = $rida['roll'];
 					header("Location: ?page=loomad");
 // NB!!				lisada külastuste arvu suurendamist
 					$query3 = "UPDATE 10162828_kylastajad SET visits = visits + 1;";
