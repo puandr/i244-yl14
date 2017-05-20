@@ -29,6 +29,7 @@ function logi(){
 					$_SESSION['user'] = $_POST['user'];
 					$rida = mysqli_fetch_assoc($result);
 					$_SESSION['roll'] = $rida['roll'];
+					$id = $rida['id'];
 					header("Location: ?page=loomad");
 					//õigem oleks siduda visiitide arvu külastaja ID-ga, aga väikse andmebaasi puhul sobib ka nime jaärgi
 					$query3 = "UPDATE 10162828_kylastajad SET visits = visits + 1 WHERE username = '$kasutaja';";
@@ -44,6 +45,8 @@ function logi(){
 	
 	include_once('views/login.html');
 }
+
+
 
 function logout(){
 	$_SESSION=array();
@@ -128,6 +131,65 @@ function lisa(){
 }
 
 
+function muuda(){
+	// siia on vaja funktsionaalsust (13. nädalal)
+	
+	global $connection;
+	
+	if (empty($_SESSION['user'])) {
+		header("Location: ?page=login");
+	} elseif ($_SESSION['roll'] == 'user') {
+		header("Location: ?page=loomad");
+	} 
+	if (isset($_POST['id'])) {
+		//echo "<p>";
+		//print_r($_SERVER['REQUEST_METHOD']);
+		//echo "</p>";
+		if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+			if ($_POST['nimi'] == "" || $_POST['puur'] == "") {
+				$errors[] = "Nimi või puur on sisestamata";
+			} elseif (upload("liik") == ""){
+				$errors[] = "Faili saatmine nurjus";
+			} elseif ($_POST['id'] == ""){
+				header("Location: ?page=loomad");
+			} else {
+				//upload('liik');
+				$id = mysqli_real_escape_string($connection, $_POST["id"]);
+				$loom = hangi_loom($id);
+				$nimi = mysqli_real_escape_string($connection, $_POST["nimi"]);
+				$puur = mysqli_real_escape_string($connection, $_POST["puur"]);				
+				$liik = mysqli_real_escape_string($connection, substr($_FILES['liik']['name'], 0, -4));
+				
+				if (upload("liik")) {
+					$liik = mysqli_real_escape_string($connection, upload("liik"));
+				} else {
+					$liik = $loom['liik'];
+				}
+				$query5 = "UPDATE 10162828_loomaaed SET nimi = '$nimi', puur = '$puur', liik = '$liik' WHERE id = '$id'";
+				$result = mysqli_query($connection, $query5);
+				header("Location: ?page=loomad");
+				
+				if (mysqli_insert_id($connection)) {
+					header("Location: ?page=loomad");
+				} else {
+					header("Location: ?page=loomavorm");
+				}
+			}
+		} elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
+			$id = mysqli_real_escape_string($connection, $_GET["id"]);
+			if ($id == "") {
+				header("Location: ?page=loomad");
+			} else {
+				$loom = hangi_loom($id);
+			}
+		}
+		
+		
+	}
+	include_once('views/loomavorm.html');
+	
+}
+
 function upload($name){
 	$allowedExts = array("jpg", "jpeg", "gif", "png");
 	$allowedTypes = array("image/gif", "image/jpeg", "image/png","image/pjpeg");
@@ -154,6 +216,18 @@ function upload($name){
 		}
 	} else {
 		return "";
+	}
+}
+
+function hangi_loom($id) {
+	global $connection;
+	$query4 = "SELECT * FROM 10162828_loomaaed WHERE id={$id}";
+	$result = mysqli_query($connection, $query4) or die("midagi läks valesti");
+	if (mysqli_num_rows($result) >= 1) {
+		$loom =mysqli_fetch_assoc($result);
+		return $loom;
+	} else {
+		header("Location: loomaaed.php?page=loomad");
 	}
 }
 
