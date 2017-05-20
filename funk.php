@@ -30,8 +30,8 @@ function logi(){
 					$rida = mysqli_fetch_assoc($result);
 					$_SESSION['roll'] = $rida['roll'];
 					header("Location: ?page=loomad");
-// NB!!				lisada külastuste arvu suurendamist
-					$query3 = "UPDATE 10162828_kylastajad SET visits = visits + 1;";
+					//õigem oleks siduda visiitide arvu külastaja ID-ga, aga väikse andmebaasi puhul sobib ka nime jaärgi
+					$query3 = "UPDATE 10162828_kylastajad SET visits = visits + 1 WHERE username = '$kasutaja';";
 					$result3 = mysqli_query($connection, $query3) or die("$query3 - ".mysqli_error($connection));
 				} else {
 					$errors[] = "Vale kasutajanimi või parool";

@@ -5,7 +5,11 @@
 		<div class="puur">
 			<h5>Puur <?php echo $id; ?></h5>
 			<?php foreach($puur as $looma_id => $loom): ?>
+				<?php if($_SESSION['roll'] == 'admin'): ?>
+				<a href = "?page=muuda&id=<?php echo $loom['id']; ?>">
+				<?php endif; ?>
 				<img src="pildid/<?php echo $loom['liik']; ?>.png">
+				<?php if($_SESSION['roll'] == 'admin') {echo "</a>";} ?>
 			<?php endforeach; ?>
 		</div>
 	<?php endforeach; ?>
